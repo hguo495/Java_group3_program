@@ -50,8 +50,8 @@ public class EnergyServlet extends HttpServlet {
 
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("cst8288");
+            creds.setPassword("cst8288");
 
             EnergyBusinessLogic energyLogic = new EnergyBusinessLogic(creds);
             VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
@@ -129,8 +129,8 @@ public class EnergyServlet extends HttpServlet {
 
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("cst8288");
+            creds.setPassword("cst8288");
 
             EnergyBusinessLogic energyLogic = new EnergyBusinessLogic(creds);
 
