@@ -1,3 +1,10 @@
+<%-- 
+    Document   : edit.jsp
+    Created on : Apr 2, 2025, 9:22:54 p.m.
+    Author     : MM
+--%>
+
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -5,7 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Energy Usage Record</title>
+    <title>Edit Energy Usage Record</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,7 +85,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Add Energy Usage Record</h1>
+    <h1>Edit Energy Usage Record</h1>
 
     <c:if test="${not empty error}">
         <div class="error-message" style="display: block;">
@@ -86,15 +93,16 @@
         </div>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/energy" method="post" id="addEnergyForm" onsubmit="return validateForm()">
-        <input type="hidden" name="action" value="add" />
+    <form action="${pageContext.request.contextPath}/energy/edit" method="post" id="editEnergyForm" onsubmit="return validateForm()">
+        <input type="hidden" name="action" value="update" />
+        <input type="hidden" name="usageId" value="${record.usageId}" />
 
         <div class="form-group">
             <label for="vehicleId">Vehicle:</label>
             <select id="vehicleId" name="vehicleId" required>
                 <option value="">Select a vehicle</option>
                 <c:forEach items="${vehicles}" var="vehicle">
-                    <option value="${vehicle.vehicleId}">
+                    <option value="${vehicle.vehicleId}" ${vehicle.vehicleId == record.vehicleId ? 'selected' : ''}>
                         ${vehicle.vehicleId} - ${vehicle.type} (${vehicle.number})
                     </option>
                 </c:forEach>
@@ -105,29 +113,34 @@
             <label for="fuelEnergyType">Fuel/Energy Type:</label>
             <select id="fuelEnergyType" name="fuelEnergyType" required>
                 <option value="">Select fuel/energy type</option>
-                <option value="Gasoline">Gasoline</option>
-                <option value="Diesel">Diesel</option>
-                <option value="Electricity">Electricity</option>
-                <option value="Natural Gas">Natural Gas</option>
-                <option value="Hydrogen">Hydrogen</option>
-                <option value="Biodiesel">Biodiesel</option>
-                <option value="Ethanol">Ethanol</option>
+                <option value="Gasoline" ${record.fuelEnergyType == 'Gasoline' ? 'selected' : ''}>Gasoline</option>
+                <option value="Diesel" ${record.fuelEnergyType == 'Diesel' ? 'selected' : ''}>Diesel</option>
+                <option value="Electricity" ${record.fuelEnergyType == 'Electricity' ? 'selected' : ''}>Electricity</option>
+                <option value="Natural Gas" ${record.fuelEnergyType == 'Natural Gas' ? 'selected' : ''}>Natural Gas</option>
+                <option value="Hydrogen" ${record.fuelEnergyType == 'Hydrogen' ? 'selected' : ''}>Hydrogen</option>
+                <option value="Biodiesel" ${record.fuelEnergyType == 'Biodiesel' ? 'selected' : ''}>Biodiesel</option>
+                <option value="Ethanol" ${record.fuelEnergyType == 'Ethanol' ? 'selected' : ''}>Ethanol</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="amountUsed">Amount Used:</label>
-            <input type="number" id="amountUsed" name="amountUsed" step="0.01" min="0" required>
+            <input type="number" id="amountUsed" name="amountUsed" step="0.01" min="0" value="${record.amountUsed}" required>
             <small>For gasoline/diesel: liters, for electricity: kWh, etc.</small>
         </div>
 
         <div class="form-group">
             <label for="distanceTraveled">Distance Traveled (km):</label>
-            <input type="number" id="distanceTraveled" name="distanceTraveled" step="0.1" min="0" required>
+            <input type="number" id="distanceTraveled" name="distanceTraveled" step="0.1" min="0" value="${record.distanceTraveled}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="timestamp">Timestamp:</label>
+            <input type="datetime-local" id="timestamp" name="timestamp" value="${record.timestamp}" required>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-save">Save Energy Usage</button>
+            <button type="submit" class="btn btn-save">Update Energy Usage</button>
             <a href="${pageContext.request.contextPath}/energy" class="btn btn-cancel">Cancel</a>
         </div>
     </form>
@@ -139,8 +152,9 @@
         const fuelEnergyType = document.getElementById("fuelEnergyType").value;
         const amountUsed = document.getElementById("amountUsed").value;
         const distanceTraveled = document.getElementById("distanceTraveled").value;
+        const timestamp = document.getElementById("timestamp").value;
 
-        if (!vehicleId || !fuelEnergyType || !amountUsed || !distanceTraveled) {
+        if (!vehicleId || !fuelEnergyType || !amountUsed || !distanceTraveled || !timestamp) {
             showError("All fields are required");
             return false;
         }

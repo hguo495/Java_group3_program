@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * DAO implementation for maintenance task operations.
- * @author Jinze Li
+ * @author Hongchen Guo
  */
 public class MaintenanceTaskDAOImpl implements MaintenanceTaskDAO {
     private final Connection connection;
@@ -61,6 +61,29 @@ public class MaintenanceTaskDAOImpl implements MaintenanceTaskDAO {
             } else {
                 stmt.setInt(6, task.getTechnicianId());
             }
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void updateMaintenanceTask(MaintenanceTask task) throws SQLException {
+        String query = "UPDATE maintenance_tasks SET component_id = ?, vehicle_id = ?, description = ?, scheduled_date = ?, status = ? WHERE task_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, task.getComponentId());
+            stmt.setString(2, task.getVehicleId());
+            stmt.setString(3, task.getDescription());
+            stmt.setString(4, task.getScheduledDate());
+            stmt.setString(5, task.getStatus());
+            stmt.setInt(6, task.getTaskId());
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void deleteMaintenanceTask(int taskId) throws SQLException {
+        String query = "DELETE FROM maintenance_tasks WHERE task_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, taskId);
             stmt.executeUpdate();
         }
     }
