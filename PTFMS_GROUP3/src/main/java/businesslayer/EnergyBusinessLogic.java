@@ -1,6 +1,5 @@
 package businesslayer;
 
-import businesslayer.EnergyStrategy;
 import dataaccesslayer.EnergyUsageDAO;
 import dataaccesslayer.EnergyUsageDAOImpl;
 import entity.EnergyUsage;
@@ -35,6 +34,28 @@ public class EnergyBusinessLogic {
     }
 
     /**
+     * Gets an energy usage record by ID.
+     * @param id the ID of the record
+     * @return the energy usage record
+     * @throws SQLException if a database error occurs
+     */
+    public EnergyUsage getEnergyUsageById(int id) throws SQLException {
+        return energyUsageDAO.getEnergyUsageById(id);
+    }
+
+    /**
+     * Gets energy usage records based on filters.
+     * @param fuelEnergyType the fuel/energy type filter
+     * @param startDate the start date filter
+     * @param endDate the end date filter
+     * @return a list of filtered energy usage records
+     * @throws SQLException if a database error occurs
+     */
+    public List<EnergyUsage> getFilteredEnergyUsage(String fuelEnergyType, String startDate, String endDate) throws SQLException {
+        return energyUsageDAO.getFilteredEnergyUsage(fuelEnergyType, startDate, endDate);
+    }
+
+    /**
      * Adds a new energy usage record and checks efficiency.
      * @param usage the energy usage record to add
      * @throws SQLException if a database error occurs
@@ -46,6 +67,29 @@ public class EnergyBusinessLogic {
             AlertBusinessLogic alertLogic = new AlertBusinessLogic(new CredentialsDTO());
             alertLogic.addAlert("Energy", usage.getVehicleId(), "Excessive energy usage detected");
         }
+    }
+
+    /**
+     * Updates an existing energy usage record.
+     * @param usage the updated energy usage record
+     * @throws SQLException if a database error occurs
+     */
+    public void updateEnergyUsage(EnergyUsage usage) throws SQLException {
+        energyUsageDAO.updateEnergyUsage(usage);
+        setStrategy(usage.getFuelEnergyType());
+        if (!energyStrategy.isEfficient(usage.getAmountUsed(), usage.getDistanceTraveled())) {
+            AlertBusinessLogic alertLogic = new AlertBusinessLogic(new CredentialsDTO());
+            alertLogic.addAlert("Energy", usage.getVehicleId(), "Excessive energy usage detected");
+        }
+    }
+
+    /**
+     * Deletes an energy usage record by ID.
+     * @param id the ID of the record to delete
+     * @throws SQLException if a database error occurs
+     */
+    public void deleteEnergyUsage(int id) throws SQLException {
+        energyUsageDAO.deleteEnergyUsage(id);
     }
 
     /**
