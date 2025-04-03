@@ -36,13 +36,26 @@
             background-color: #f2f2f2;
         }
     </style>
+    <!-- 加载 Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPFsh3dfcAIzq8V_upakHPKdNL--cRdHQ"></script>
+    <!-- 地图初始化脚本 -->
+    <script>
+        function initMap() {
+            var mapDiv = document.getElementById("map");
+            var map = new google.maps.Map(mapDiv, {
+                center: { lat: 45.4215, lng: -75.6972 },
+                zoom: 12
+            });
+        }
+        window.onload = initMap;
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>GPS Tracking System</h1>
         
         <div class="map-container" id="map">
-            <!-- Map will be displayed here -->
+            <!-- 地图加载中 -->
             <p>Loading map...</p>
         </div>
         
@@ -55,38 +68,24 @@
                         <th>Last Update</th>
                         <th>Latitude</th>
                         <th>Longitude</th>
-                        <th>Speed</th>
-                        <th>Status</th>
+                        
+                        
                     </tr>
                 </thead>
                 <tbody>
                     <c:forEach items="${deviceList}" var="device">
                         <tr>
-                            <td>${device.id}</td>
-                            <td>${device.lastUpdateTime}</td>
+                            <td>${device.trackingId}</td>
+                            <td>${device.timestamp}</td>
                             <td>${device.latitude}</td>
                             <td>${device.longitude}</td>
-                            <td>${device.speed} km/h</td>
-                            <td>${device.status}</td>
+                            
+                            
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
         </div>
     </div>
-
-    <!-- Map API scripts can be added here -->
-    <script>
-        // Add JavaScript code for map initialization and tracking functionality
-        function initMap() {
-            // Map initialization code
-            document.getElementById('map').innerHTML = "Map initialized. Please ensure the correct map API is included";
-        }
-        
-        // Call initialization function when page loads
-        window.onload = function() {
-            initMap();
-        };
-    </script>
 </body>
 </html>
