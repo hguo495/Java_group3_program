@@ -40,8 +40,8 @@ public class TrackingServlet extends HttpServlet {
         
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("cst8288");
+            creds.setPassword("cst8288");
             
             TrackingBusinessLogic trackingLogic = new TrackingBusinessLogic(creds);
             
@@ -82,8 +82,8 @@ public class TrackingServlet extends HttpServlet {
         
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("cst8288");
+            creds.setPassword("cst8288");
             
             TrackingBusinessLogic trackingLogic = new TrackingBusinessLogic(creds);
             
@@ -117,7 +117,7 @@ public class TrackingServlet extends HttpServlet {
             throws ServletException, IOException, SQLException {
         
         List<GPSTracking> gpsList = trackingLogic.getAllGPSTracking();
-        request.setAttribute("gpsList", gpsList);
+        request.setAttribute("deviceList", gpsList);
         request.getRequestDispatcher("/WEB-INF/tracking/gps.jsp").forward(request, response);
     }
     
