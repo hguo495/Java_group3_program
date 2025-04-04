@@ -21,6 +21,8 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Servlet for handling energy usage-related HTTP requests.
+ * @author Hongchen Guo
+ * @modifiedby Mei
  */
 @WebServlet(name = "EnergyServlet", urlPatterns = {"/energy", "/energy/list", "/energy/add", "/energy/edit", "/energy/delete"})
 public class EnergyServlet extends HttpServlet {

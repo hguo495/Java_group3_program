@@ -1,3 +1,10 @@
+<%-- 
+    Document   : view.jsp
+    Created on : Apr 3, 2025, 2:36:41 p.m.
+    Author     : Hongchen guo
+    Modifiedby : Mei
+--%>
+
 <!--updated on March 31-->
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
