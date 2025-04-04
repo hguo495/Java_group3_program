@@ -3,6 +3,7 @@ package transferobjects;
 /**
  * DTO for transferring energy usage data between layers.
  * @author Hongchen Guo
+ * Modified by: Wenjuan Qi
  */
 public class EnergyUsageDTO {
     private int usageId;

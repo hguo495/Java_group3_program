@@ -2,7 +2,7 @@ package transferobjects;
 
 /**
  * DTO for transferring vehicle data between layers.
- * @author Hongchen Guo
+ * @author Wenjuan Qi
  */
 public class VehicleDTO {
     private String vehicleId;

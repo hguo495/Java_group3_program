@@ -2,7 +2,7 @@ package transferobjects;
 
 /**
  * DTO for transferring station event data between layers.
- * @author [Your Name]
+ * @author Wenjuan Qi
  */
 public class StationEventDTO {
     private int eventId;

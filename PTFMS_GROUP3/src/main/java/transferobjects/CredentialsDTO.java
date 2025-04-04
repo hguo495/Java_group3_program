@@ -3,6 +3,7 @@ package transferobjects;
 /**
  * DTO for transferring database login credentials between layers.
  * @author Hongchen Guo
+ * Modified by: Wenjuan Qi
  */
 public class CredentialsDTO {
     private String username;
