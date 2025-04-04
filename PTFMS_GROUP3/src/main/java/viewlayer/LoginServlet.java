@@ -67,8 +67,8 @@ public class LoginServlet extends HttpServlet {
         
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("root");
+            creds.setPassword("1234");
             
             UserBusinessLogic userLogic = new UserBusinessLogic(creds);
             User user = userLogic.authenticateUser(email, password);

@@ -8,6 +8,16 @@ public class CredentialsDTO {
     private String username;
     private String password;
 
+    // 新增：带参数构造函数
+    public CredentialsDTO(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    // 保留默认构造函数
+    public CredentialsDTO() {
+    }
+
     /**
      * Gets the username.
      * @return the username

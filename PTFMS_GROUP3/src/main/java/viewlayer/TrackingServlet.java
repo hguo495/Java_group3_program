@@ -40,8 +40,8 @@ public class TrackingServlet extends HttpServlet {
         
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("cst8288");
-            creds.setPassword("cst8288");
+            creds.setUsername("root");
+            creds.setPassword("1234");
             
             TrackingBusinessLogic trackingLogic = new TrackingBusinessLogic(creds);
             

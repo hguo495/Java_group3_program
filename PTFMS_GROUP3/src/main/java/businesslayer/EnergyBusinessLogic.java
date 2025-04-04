@@ -63,9 +63,13 @@ public class EnergyBusinessLogic {
     public void addEnergyUsage(EnergyUsage usage) throws SQLException {
         energyUsageDAO.addEnergyUsage(usage);
         setStrategy(usage.getFuelEnergyType());
+
         if (!energyStrategy.isEfficient(usage.getAmountUsed(), usage.getDistanceTraveled())) {
-            AlertBusinessLogic alertLogic = new AlertBusinessLogic(new CredentialsDTO());
-            alertLogic.addAlert("Energy", usage.getVehicleId(), "Excessive energy usage detected");
+            CredentialsDTO creds = new CredentialsDTO();
+            creds.setUsername("root");
+            creds.setPassword("1234");
+            AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
+            alertLogic.addAlert("Fuel", usage.getVehicleId(), "Excessive fuel consumption detected");
         }
     }
 
@@ -77,9 +81,13 @@ public class EnergyBusinessLogic {
     public void updateEnergyUsage(EnergyUsage usage) throws SQLException {
         energyUsageDAO.updateEnergyUsage(usage);
         setStrategy(usage.getFuelEnergyType());
+
         if (!energyStrategy.isEfficient(usage.getAmountUsed(), usage.getDistanceTraveled())) {
-            AlertBusinessLogic alertLogic = new AlertBusinessLogic(new CredentialsDTO());
-            alertLogic.addAlert("Energy", usage.getVehicleId(), "Excessive energy usage detected");
+            CredentialsDTO creds = new CredentialsDTO();
+            creds.setUsername("root");
+            creds.setPassword("1234");
+            AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
+            alertLogic.addAlert("Fuel", usage.getVehicleId(), "Excessive fuel consumption detected");
         }
     }
 
@@ -97,7 +105,7 @@ public class EnergyBusinessLogic {
      * @param fuelType the fuel/energy type
      */
     private void setStrategy(String fuelType) {
-        if ("Diesel".equals(fuelType) || "CNG".equals(fuelType)) {
+        if ("Diesel".equalsIgnoreCase(fuelType) || "CNG".equalsIgnoreCase(fuelType)) {
             this.energyStrategy = new DieselStrategy();
         } else {
             this.energyStrategy = new ElectricStrategy();

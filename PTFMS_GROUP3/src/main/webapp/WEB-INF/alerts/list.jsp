@@ -213,7 +213,11 @@
                         <td>
                             <a href="${pageContext.request.contextPath}/alerts?action=view&id=${alert.alertId}" class="btn btn-view btn-action">View</a>
                             <c:if test="${alert.status == 'Pending'}">
-                                <a href="${pageContext.request.contextPath}/alerts?action=resolve&id=${alert.alertId}" class="btn btn-resolve btn-action">Resolve</a>
+                                <form action="${pageContext.request.contextPath}/alerts" method="post" style="display: inline;">
+                                    <input type="hidden" name="action" value="resolve">
+                                    <input type="hidden" name="id" value="${alert.alertId}">
+                                    <button type="submit" class="btn btn-resolve btn-action">Resolve</button>
+                                </form>
                             </c:if>
                         </td>
                     </tr>
@@ -252,9 +256,11 @@
     
     <script>
         function resetFilters() {
+            // Clear the form inputs
             document.getElementById("type").value = "";
             document.getElementById("status").value = "";
             document.getElementById("vehicleId").value = "";
+            // Submit the form to reload the page with cleared filters
             document.getElementById("filterForm").submit();
         }
     </script>
