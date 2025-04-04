@@ -7,8 +7,11 @@
  * This class performs an end-to-end integration test for vehicle registration.
  * It verifies that a newly registered vehicle is correctly stored in the database.
  * 
- * Author: Jinze Li
+ * @Author: Jinze Li
+ * @modifiedby Mei
  */
+
+
 
 import businesslayer.VehicleBusinessLogic;
 import entity.Vehicle;
@@ -31,21 +34,16 @@ public class VehicleRegistrationIntegrationTest {
 
             VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
 
-            // Define vehicle data to be registered
-            String type = "Diesel Bus";
-            String number = "B999";
-            String fuelType = "Diesel";
-            double consumptionRate = 0.55;
-            int maxPassengers = 45;
-            String route = "Route Z";
+            // Use a unique vehicle number to avoid conflict
+            String number = "TEST_" + System.currentTimeMillis();
 
-            // Register vehicle
-            vehicleLogic.addVehicle(type, number, fuelType, consumptionRate, maxPassengers, route);
+            // Register new vehicle
+            vehicleLogic.addVehicle("Diesel Bus", number, "Diesel", 0.55, 45, "Route Z");
 
-            // Retrieve all vehicles and check if the new one exists
+            // Verify
             List<Vehicle> vehicles = vehicleLogic.getAllVehicles();
             boolean exists = vehicles.stream()
-                    .anyMatch(v -> v.getNumber().equals("B999") && v.getRoute().equals("Route Z"));
+                    .anyMatch(v -> v.getNumber().equals(number) && v.getRoute().equals("Route Z"));
 
             assertTrue(exists, "Newly registered vehicle should exist in database");
 

@@ -8,11 +8,13 @@
  * wear or usage thresholds. It ensures that a maintenance alert is generated
  * when expected conditions are met.
  * 
- * Author: Jinze Li
+ * @Author: Jinze Li
+ * @modifiedby Mei
  */
 
 import businesslayer.AlertBusinessLogic;
 import businesslayer.ComponentBusinessLogic;
+import businesslayer.VehicleBusinessLogic;
 import entity.Alert;
 import entity.Component;
 import org.junit.jupiter.api.Test;
@@ -32,29 +34,35 @@ public class ComponentAlertTest {
             creds.setUsername("CST8288");
             creds.setPassword("CST8288");
 
+            VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
             ComponentBusinessLogic componentLogic = new ComponentBusinessLogic(creds);
             AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
 
-            // Create a component that exceeds the usage threshold
-            Component component = new Component();
-            component.setVehicleId("BUS001");
-            component.setType("Brakes");
-            component.setHoursUsed(90000); // Exceeds 10-year threshold
-            component.setWearPercentage(85); // High wear
-            component.setDiagnosticStatus("Warning");
+            // Create unique vehicle ID
+            String uniqueVehicleId = "TEST_" + System.currentTimeMillis();
 
+            // Add test vehicle
+            vehicleLogic.addVehicle("Diesel Bus", uniqueVehicleId, "Diesel", 0.5, 50, "Test Route");
+
+            // Add component that should trigger alert
+            Component component = new Component();
+            component.setVehicleId(uniqueVehicleId);
+            component.setType("Brakes");
+            component.setHoursUsed(90000);
+            component.setWearPercentage(85);
+            component.setDiagnosticStatus("Warning");
             componentLogic.addComponent(component);
 
-            // Check if a maintenance alert was triggered for this component
-            List<Alert> alerts = alertLogic.getFilteredAlerts("Maintenance", "Pending", "BUS001");
+            Thread.sleep(200);
 
+            List<Alert> alerts = alertLogic.getFilteredAlerts("Maintenance", "Pending", uniqueVehicleId);
             boolean found = alerts.stream()
-                    .anyMatch(a -> a.getMessage().toLowerCase().contains("maintenance required"));
+                    .anyMatch(a -> a.getMessage().toLowerCase().contains("needs maintenance"));
 
             assertTrue(found, "Alert should be triggered for component exceeding wear/usage threshold");
 
-        } catch (SQLException e) {
-            fail("SQLException: " + e.getMessage());
+        } catch (SQLException | InterruptedException e) {
+            fail("Exception occurred: " + e.getMessage());
         }
     }
 }

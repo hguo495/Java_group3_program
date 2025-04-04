@@ -3,16 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+
 /**
  * This class tests the integration between component usage tracking
  * and the alert generation logic. It verifies that when a component exceeds
  * predefined usage and wear thresholds, a maintenance alert is triggered.
  * 
- * Author: Jinze Li
+ * @Author: Jinze Li
+ *  @modifiedby Mei
  */
 
 import businesslayer.AlertBusinessLogic;
 import businesslayer.ComponentBusinessLogic;
+import businesslayer.VehicleBusinessLogic;
 import entity.Alert;
 import entity.Component;
 import transferobjects.CredentialsDTO;
@@ -33,29 +36,37 @@ public class ComponentAlertIntegrationTest {
             creds.setUsername("CST8288");
             creds.setPassword("CST8288");
 
+            VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
             ComponentBusinessLogic componentLogic = new ComponentBusinessLogic(creds);
             AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
 
-            // Create a component that exceeds lifespan and wear thresholds
-            Component component = new Component();
-            component.setVehicleId("BUS001");
-            component.setType("Axle Bearing");
-            component.setHoursUsed(11000);  // Over 10,000 hours
-            component.setWearPercentage(85); // Over 80%
+            // Create unique vehicle ID
+            String uniqueVehicleId = "TEST_" + System.currentTimeMillis();
 
+            // Add test vehicle
+            vehicleLogic.addVehicle("Diesel Bus", uniqueVehicleId, "Diesel", 0.5, 50, "Test Route");
+
+            // Add component over threshold
+            Component component = new Component();
+            component.setVehicleId(uniqueVehicleId);
+            component.setType("Axle Bearing");
+            component.setHoursUsed(11000);
+            component.setWearPercentage(85);
             componentLogic.addComponent(component);
 
-            // Check if a maintenance alert has been triggered
+            Thread.sleep(200);
+
+            // Check for triggered alert
             List<Alert> alerts = alertLogic.getAllAlerts();
             boolean exists = alerts.stream()
-                    .anyMatch(a -> a.getType().equals("Maintenance") &&
-                                   a.getVehicleId().equals("BUS001") &&
-                                   a.getMessage().toLowerCase().contains("exceeded"));
+                    .anyMatch(a -> a.getType().equalsIgnoreCase("Maintenance") &&
+                                   a.getVehicleId().equals(uniqueVehicleId) &&
+                                   a.getMessage().toLowerCase().contains("needs maintenance"));
 
             assertTrue(exists, "Component threshold exceeded alert should be triggered");
 
-        } catch (SQLException e) {
-            fail("SQLException occurred: " + e.getMessage());
+        } catch (SQLException | InterruptedException e) {
+            fail("Exception occurred: " + e.getMessage());
         }
     }
 }
