@@ -3,7 +3,7 @@ package transferobjects;
 /**
  * DTO for transferring maintenance task data between layers.
  * @author Hongchen Guo
- * Modified by: Wenjuan Qi
+ * @Modified by: Wenjuan Qi
  */
 public class MaintenanceTaskDTO {
     private int taskId;

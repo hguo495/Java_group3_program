@@ -7,6 +7,7 @@ import java.sql.SQLException;
 /**
  * Command to schedule a maintenance task.
  * @author Hongchen Guo
+ * @modifiedby Mei
  */
 public class ScheduleMaintenanceCommand implements Command {
     private MaintenanceTaskDAO maintenanceTaskDAO;
