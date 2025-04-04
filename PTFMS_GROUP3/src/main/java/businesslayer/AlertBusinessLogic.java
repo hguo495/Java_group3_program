@@ -37,6 +37,28 @@ public class AlertBusinessLogic {
     }
 
     /**
+     * Gets filtered alerts based on type, status, and vehicle ID.
+     * @param type the type of alert (optional)
+     * @param status the status of alert (optional)
+     * @param vehicleId the vehicle ID (optional)
+     * @return a list of filtered alerts
+     * @throws SQLException if a database error occurs
+     */
+    public List<Alert> getFilteredAlerts(String type, String status, String vehicleId) throws SQLException {
+        return alertDAO.getFilteredAlerts(type, status, vehicleId);
+    }
+
+    /**
+     * Gets a specific alert by its ID.
+     * @param alertId the ID of the alert to retrieve
+     * @return the Alert object, or null if not found
+     * @throws SQLException if a database error occurs
+     */
+    public Alert getAlertById(int alertId) throws SQLException {
+        return alertDAO.getAlertById(alertId);
+    }
+
+    /**
      * Adds a new alert and notifies observers.
      * @param type the type of alert
      * @param vehicleId the vehicle ID
@@ -52,6 +74,28 @@ public class AlertBusinessLogic {
         alert.setStatus("Pending");
         alertDAO.addAlert(alert);
         notifyObservers();
+    }
+
+    /**
+     * Resolves an alert by updating its status to "Resolved" and notifies observers.
+     * @param alertId the ID of the alert to resolve
+     * @throws SQLException if a database error occurs
+     */
+    public void resolveAlert(int alertId) throws SQLException {
+        Alert alert = alertDAO.getAlertById(alertId);
+        if (alert == null) {
+            throw new SQLException("Alert with ID " + alertId + " not found");
+        }
+        if (!"Pending".equalsIgnoreCase(alert.getStatus())) {
+            throw new SQLException("Alert with ID " + alertId + " cannot be resolved because its status is " + alert.getStatus());
+        }
+        alert.setStatus("Resolved");
+        alertDAO.updateAlert(alert);
+        try {
+            notifyObservers();
+        } catch (Exception e) {
+            System.err.println("Error notifying observers: " + e.getMessage());
+        }
     }
 
     /**

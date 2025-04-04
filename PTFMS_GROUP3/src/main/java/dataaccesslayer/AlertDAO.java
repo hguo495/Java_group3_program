@@ -11,4 +11,7 @@ import java.util.List;
 public interface AlertDAO {
     List<Alert> getAllAlerts() throws SQLException;
     void addAlert(Alert alert) throws SQLException;
+    Alert getAlertById(int alertId) throws SQLException;
+    void updateAlert(Alert alert) throws SQLException;
+    List<Alert> getFilteredAlerts(String type, String status, String vehicleId) throws SQLException;
 }
