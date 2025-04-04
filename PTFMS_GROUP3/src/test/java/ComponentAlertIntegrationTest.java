@@ -34,8 +34,8 @@ public class ComponentAlertIntegrationTest {
     @BeforeEach
     public void setup() {
         creds = new CredentialsDTO();
-        creds.setUsername("CST8288");
-        creds.setPassword("CST8288");
+        creds.setUsername("cst8288");
+        creds.setPassword("cst8288");
 
         DatabaseTestUtils.cleanTestData(creds); // 自动清理旧数据
     }
@@ -43,8 +43,8 @@ public class ComponentAlertIntegrationTest {
     public void testComponentOverThresholdTriggersAlert() {
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("cst8288");
+            creds.setPassword("cst8288");
 
             VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
             ComponentBusinessLogic componentLogic = new ComponentBusinessLogic(creds);

@@ -34,8 +34,8 @@ public class EnergyUsageIntegrationTest {
     @BeforeEach
     public void setup() {
         creds = new CredentialsDTO();
-        creds.setUsername("CST8288");
-        creds.setPassword("CST8288");
+        creds.setUsername("cst8288");
+        creds.setPassword("cst8288");
 
         DatabaseTestUtils.cleanTestData(creds); // 自动清理旧数据
     }
@@ -43,8 +43,8 @@ public class EnergyUsageIntegrationTest {
     public void testHighEnergyUsageTriggersAlert() {
         try {
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("cst8288");
+            creds.setPassword("cst8288");
 
             EnergyBusinessLogic energyLogic = new EnergyBusinessLogic(creds);
             AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);

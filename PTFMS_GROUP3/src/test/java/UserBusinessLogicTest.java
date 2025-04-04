@@ -26,8 +26,8 @@ public class UserBusinessLogicTest {
         try {
             // Set up database credentials
             CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("CST8288");
-            creds.setPassword("CST8288");
+            creds.setUsername("cst8288");
+            creds.setPassword("cst8288");
 
             // Create business logic instance
             UserBusinessLogic logic = new UserBusinessLogic(creds);
