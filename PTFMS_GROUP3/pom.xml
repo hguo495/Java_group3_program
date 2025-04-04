@@ -6,7 +6,7 @@
     <artifactId>PTFMS_GROUP3</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
-    <name>PTFMS_GROUP3</name>
+    <name>PTFMS_GROUP3_v2</name>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
