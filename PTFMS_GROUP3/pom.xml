@@ -6,7 +6,7 @@
     <artifactId>PTFMS_GROUP3</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
-    <name>PTFMS_GROUP3</name>
+    <name>PTFMS_GROUP3_v2</name>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -33,6 +33,18 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
+        </dependency>
+        <!-- JUnit 5 dependency -->
+       <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>jakarta.persistence</artifactId>
+            <version>2.2.3</version>
         </dependency>
     </dependencies>
 

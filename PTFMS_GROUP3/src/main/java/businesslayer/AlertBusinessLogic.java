@@ -8,6 +8,8 @@ import transferobjects.CredentialsDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Business logic for alert operations using Observer pattern.
@@ -70,7 +72,12 @@ public class AlertBusinessLogic {
         alert.setType(type);
         alert.setVehicleId(vehicleId);
         alert.setMessage(message);
-        alert.setTimestamp(String.valueOf(System.currentTimeMillis()));
+        
+        // Format the timestamp in a proper datetime format
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedTimestamp = sdf.format(new Date(System.currentTimeMillis()));
+        alert.setTimestamp(formattedTimestamp);
+        
         alert.setStatus("Pending");
         alertDAO.addAlert(alert);
         notifyObservers();
