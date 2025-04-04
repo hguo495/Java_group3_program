@@ -3,6 +3,7 @@ package transferobjects;
 /**
  * DTO for transferring operator log data between layers.
  * @author Hongchen Guo
+ * Modified by: Wenjuan Qi
  */
 public class OperatorLogDTO {
     private int logId;

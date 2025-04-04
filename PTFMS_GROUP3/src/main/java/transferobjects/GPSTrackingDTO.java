@@ -3,6 +3,7 @@ package transferobjects;
 /**
  * DTO for transferring GPS tracking data between layers.
  * @author Hongchen Guo
+ * Modified by: Wenjuan Qi
  */
 public class GPSTrackingDTO {
     private int trackingId;

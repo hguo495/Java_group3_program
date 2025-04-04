@@ -3,6 +3,7 @@ package transferobjects;
 /**
  * DTO for transferring report data between layers.
  * @author Hongchen Guo
+ * Modified by: Wenjuan Qi
  */
 public class ReportDTO {
     private int reportId;
