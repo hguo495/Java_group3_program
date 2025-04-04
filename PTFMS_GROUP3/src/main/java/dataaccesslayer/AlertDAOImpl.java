@@ -2,24 +2,24 @@ package dataaccesslayer;
 
 import entity.Alert;
 import transferobjects.CredentialsDTO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * DAO implementation for alert operations.
+ * Ensures prevention of duplicate alerts by checking for existing ones before insertion.
+ * 
  * @author Jinze Li
  */
 public class AlertDAOImpl implements AlertDAO {
     private final Connection connection;
 
     /**
-     * Constructor that initializes the database connection.
-     * @param creds the credentials to connect to the database
-     * @throws SQLException if a database error occurs
+     * Initializes the AlertDAOImpl with a database connection.
+     * @param creds Credentials for connecting to the database
+     * @throws SQLException if connection fails
      */
     public AlertDAOImpl(CredentialsDTO creds) throws SQLException {
         DataSource dataSource = DataSource.getInstance(creds);
@@ -33,14 +33,7 @@ public class AlertDAOImpl implements AlertDAO {
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Alert alert = new Alert();
-                alert.setAlertId(rs.getInt("alert_id"));
-                alert.setType(rs.getString("type"));
-                alert.setVehicleId(rs.getString("vehicle_id"));
-                alert.setMessage(rs.getString("message"));
-                alert.setTimestamp(rs.getString("timestamp"));
-                alert.setStatus(rs.getString("status"));
-                alerts.add(alert);
+                alerts.add(mapResultSetToAlert(rs));
             }
         }
         return alerts;
@@ -66,14 +59,7 @@ public class AlertDAOImpl implements AlertDAO {
             stmt.setInt(1, alertId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    Alert alert = new Alert();
-                    alert.setAlertId(rs.getInt("alert_id"));
-                    alert.setType(rs.getString("type"));
-                    alert.setVehicleId(rs.getString("vehicle_id"));
-                    alert.setMessage(rs.getString("message"));
-                    alert.setTimestamp(rs.getString("timestamp"));
-                    alert.setStatus(rs.getString("status"));
-                    return alert;
+                    return mapResultSetToAlert(rs);
                 }
             }
         }
@@ -90,10 +76,7 @@ public class AlertDAOImpl implements AlertDAO {
             stmt.setString(4, alert.getTimestamp());
             stmt.setString(5, alert.getStatus());
             stmt.setInt(6, alert.getAlertId());
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new SQLException("No rows updated for alert ID " + alert.getAlertId());
-            }
+            stmt.executeUpdate();
         }
     }
 
@@ -122,17 +105,43 @@ public class AlertDAOImpl implements AlertDAO {
             }
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Alert alert = new Alert();
-                    alert.setAlertId(rs.getInt("alert_id"));
-                    alert.setType(rs.getString("type"));
-                    alert.setVehicleId(rs.getString("vehicle_id"));
-                    alert.setMessage(rs.getString("message"));
-                    alert.setTimestamp(rs.getString("timestamp"));
-                    alert.setStatus(rs.getString("status"));
-                    alerts.add(alert);
+                    alerts.add(mapResultSetToAlert(rs));
                 }
             }
         }
         return alerts;
+    }
+
+    @Override
+    public List<Alert> getAlertsByVehicleAndType(String vehicleId, String type) throws SQLException {
+        List<Alert> alerts = new ArrayList<>();
+        String query = "SELECT * FROM alerts WHERE vehicle_id = ? AND type = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, vehicleId);
+            stmt.setString(2, type);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    alerts.add(mapResultSetToAlert(rs));
+                }
+            }
+        }
+        return alerts;
+    }
+
+    /**
+     * Maps the current row of a ResultSet to an Alert object.
+     * @param rs the ResultSet to map
+     * @return a populated Alert object
+     * @throws SQLException if column access fails
+     */
+    private Alert mapResultSetToAlert(ResultSet rs) throws SQLException {
+        Alert alert = new Alert();
+        alert.setAlertId(rs.getInt("alert_id"));
+        alert.setType(rs.getString("type"));
+        alert.setVehicleId(rs.getString("vehicle_id"));
+        alert.setMessage(rs.getString("message"));
+        alert.setTimestamp(rs.getString("timestamp"));
+        alert.setStatus(rs.getString("status"));
+        return alert;
     }
 }

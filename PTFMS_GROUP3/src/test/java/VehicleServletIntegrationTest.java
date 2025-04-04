@@ -12,6 +12,7 @@
 
 import businesslayer.VehicleBusinessLogic;
 import entity.Vehicle;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import transferobjects.CredentialsDTO;
 
@@ -19,9 +20,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
 import java.util.List;
-import businesslayer.VehicleBuilder;
 
 public class VehicleServletIntegrationTest {
+
+    private CredentialsDTO creds;
+
+    @BeforeEach
+    public void setup() {
+        creds = new CredentialsDTO();
+        creds.setUsername("CST8288");
+        creds.setPassword("CST8288");
+
+        DatabaseTestUtils.cleanTestData(creds); // 自动清理旧数据
+    }
 
     @Test
     public void testVehicleRegistrationFlow() {
@@ -33,16 +44,15 @@ public class VehicleServletIntegrationTest {
 
             VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
 
-            // Clean up if vehicle already exists
-            vehicleLogic.deleteVehicle("B999");
+            // Use vehicle number "B999"
             String testNumber = "B999";
-            String testId = "TEST_BUS_999";
 
+            // Clean up if already exists
             try {
-                vehicleLogic.deleteVehicle(testId);
+                vehicleLogic.deleteVehicle(testNumber);
             } catch (Exception ignore) {}
 
-            // Register new vehicle
+            // Register new vehicle using method with 6 parameters
             vehicleLogic.addVehicle("Diesel Bus", testNumber, "Diesel", 0.5, 60, "Test Route");
 
             // Retrieve all vehicles and verify the test vehicle is present

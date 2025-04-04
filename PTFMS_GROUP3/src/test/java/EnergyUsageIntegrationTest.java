@@ -24,9 +24,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 
 public class EnergyUsageIntegrationTest {
 
+    
+    private CredentialsDTO creds;
+
+    @BeforeEach
+    public void setup() {
+        creds = new CredentialsDTO();
+        creds.setUsername("CST8288");
+        creds.setPassword("CST8288");
+
+        DatabaseTestUtils.cleanTestData(creds); // 自动清理旧数据
+    }
     @Test
     public void testHighEnergyUsageTriggersAlert() {
         try {

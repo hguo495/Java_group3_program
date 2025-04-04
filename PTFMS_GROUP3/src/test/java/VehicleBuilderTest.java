@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class VehicleBuilderTest {
 
+    
+    
     @Test
     public void testBuildDieselBus() {
         // Arrange

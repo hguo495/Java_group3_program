@@ -155,7 +155,12 @@
                                 <a href="vehicles?action=view&id=${vehicle.vehicleId}" class="btn">View</a>
                                 <c:if test="${userType eq 'Manager'}">
                                     <a href="vehicles?action=showEditForm&id=${vehicle.vehicleId}" class="btn">Edit</a>
-                                    <a href="javascript:confirmDelete('${vehicle.vehicleId}')" class="btn btn-danger">Delete</a>
+                                    <form action="vehicles" method="post" style="display:inline;"
+                                          onsubmit="return confirm('Are you sure you want to delete this vehicle?');">
+                                        <input type="hidden" name="action" value="delete" />
+                                        <input type="hidden" name="id" value="${vehicle.vehicleId}" />
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
                                 </c:if>
                             </td>
                         </tr>
@@ -164,13 +169,5 @@
             </div>
         </div>
     </div>
-    
-    <script>
-        function confirmDelete(id) {
-            if (confirm("Are you sure you want to delete this vehicle?")) {
-                window.location.href = "vehicles?action=delete&id=" + id;
-            }
-        }
-    </script>
 </body>
 </html>
