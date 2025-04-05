@@ -105,11 +105,7 @@
             <select id="eventType" name="eventType" required>
                 <option value="">Select event type</option>
                 <option value="BREAK">Break</option>
-                <option value="OUT_OF_SERVICE">Out of Service</option>
-                <option value="MAINTENANCE">Maintenance</option>
-                <option value="FUEL_STOP">Fuel Stop</option>
-                <option value="OTHER">Other</option>
-            </select>
+             </select>
         </div>
 
         <div class="form-group">

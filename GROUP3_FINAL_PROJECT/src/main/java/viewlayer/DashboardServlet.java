@@ -36,61 +36,62 @@ public class DashboardServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    
+    // Check if user is logged in
+    HttpSession session = request.getSession(false);
+    if (session == null || session.getAttribute("user") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+    
+    String userType = (String) session.getAttribute("userType");
+    
+    try {
+        CredentialsDTO creds = new CredentialsDTO();
+        creds.setUsername("cst8288");
+        creds.setPassword("cst8288");
         
-        // Check if user is logged in
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        // Get data for the dashboard
+        VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
+        AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
+        TrackingBusinessLogic trackingLogic = new TrackingBusinessLogic(creds);
+        ReportBusinessLogic reportLogic = new ReportBusinessLogic(creds);
         
-        String userType = (String) session.getAttribute("userType");
+        // Get list of vehicles (both Manager and Operator can see)
+        List<Vehicle> vehicles = vehicleLogic.getAllVehicles();
+        request.setAttribute("vehicles", vehicles);
         
-        try {
-            CredentialsDTO creds = new CredentialsDTO();
-            creds.setUsername("cst8288");
-            creds.setPassword("cst8288");
-            
-            // Get data for the dashboard
-            VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
-            AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
-            TrackingBusinessLogic trackingLogic = new TrackingBusinessLogic(creds);
-            ReportBusinessLogic reportLogic = new ReportBusinessLogic(creds);
-            
-            // Get list of vehicles
-            List<Vehicle> vehicles = vehicleLogic.getAllVehicles();
-            request.setAttribute("vehicles", vehicles);
-            
-            // Get pending alerts
+        // Get GPS tracking data (both Manager and Operator can see)
+        Map<String, List<Map<String, Object>>> stationReports = 
+                trackingLogic.getAllVehicleStationReports();
+        request.setAttribute("stationReports", stationReports);
+        
+        // Manager-specific data
+        if ("Manager".equals(userType)) {
+            // Get pending alerts (only for Manager)
             List<Alert> alerts = alertLogic.getAllAlerts();
             request.setAttribute("alerts", alerts);
             
-            // Get station reports if manager
-            if ("Manager".equals(userType)) {
-                Map<String, List<Map<String, Object>>> stationReports = 
-                        trackingLogic.getAllVehicleStationReports();
-                request.setAttribute("stationReports", stationReports);
-                
-                // Get reports
-                List<Report> reports = reportLogic.getAllReports();
-                request.setAttribute("reports", reports);
-
-                // Add operator performance metrics
-                OperatorPerformanceBusinessLogic performanceLogic = new OperatorPerformanceBusinessLogic(creds);
-                List<Map<String, Object>> onTimeRates = performanceLogic.getOperatorOnTimeRates(null, null);
-                request.setAttribute("onTimeRates", onTimeRates);
-            }
+            // Get reports (only for Manager)
+            List<Report> reports = reportLogic.getAllReports();
+            request.setAttribute("reports", reports);
             
-            // Forward to the appropriate dashboard
-            String jspPage = "Manager".equals(userType) ? 
-                    "/WEB-INF/dashboard/manager.jsp" : "/WEB-INF/dashboard/operator.jsp";
-            request.getRequestDispatcher(jspPage).forward(request, response);
-            
-        } catch (SQLException ex) {
-            request.setAttribute("error", "Database error: " + ex.getMessage());
-            request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
+            // Add operator performance metrics (only for Manager)
+            OperatorPerformanceBusinessLogic performanceLogic = new OperatorPerformanceBusinessLogic(creds);
+            List<Map<String, Object>> onTimeRates = performanceLogic.getOperatorOnTimeRates(null, null);
+            request.setAttribute("onTimeRates", onTimeRates);
         }
+        
+        // Forward to the appropriate dashboard
+        String jspPage = "Manager".equals(userType) ? 
+                "/WEB-INF/dashboard/manager.jsp" : "/WEB-INF/dashboard/operator.jsp";
+        request.getRequestDispatcher(jspPage).forward(request, response);
+        
+    } catch (SQLException ex) {
+        request.setAttribute("error", "Database error: " + ex.getMessage());
+        request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
     }
+}
 }

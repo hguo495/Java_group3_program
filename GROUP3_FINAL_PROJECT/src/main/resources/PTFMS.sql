@@ -58,7 +58,7 @@ CREATE TABLE operator_logs (
     vehicle_id VARCHAR(50) NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME,
-    event_type ENUM('Break', 'Out-of-Service') NOT NULL,
+    event_type ENUM('Break', 'OutOfService') NOT NULL,
     operator_id INT NOT NULL,
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id),
     FOREIGN KEY (operator_id) REFERENCES users(user_id)
@@ -161,8 +161,7 @@ INSERT INTO gps_tracking (vehicle_id, latitude, longitude, timestamp, station_id
 -- Insert sample data for OperatorLogs
 INSERT INTO operator_logs (vehicle_id, start_time, end_time, event_type, operator_id) VALUES
 ('BUS001', '2025-03-27 12:00:00', '2025-03-27 12:30:00', 'Break', 2),
-('RAIL001', '2025-03-27 13:00:00', NULL, 'Out-of-Service', 3);
-
+('RAIL001', '2025-03-27 13:00:00', NULL, 'OutOfService', 3);
 -- Insert some sample data for operator trips
 INSERT INTO operator_trips (
     operator_id, vehicle_id, route, start_time, end_time, 

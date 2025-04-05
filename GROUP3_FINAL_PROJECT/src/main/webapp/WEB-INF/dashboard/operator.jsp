@@ -124,28 +124,12 @@
                 <li><a href="vehicles">Vehicles</a></li>
                 <li><a href="tracking">GPS Tracking</a></li>
                 <li><a href="energy">Energy Usage</a></li>
-                <li><a href="alerts">Alerts</a></li>
             </ul>
         </div>
         
         <div class="main-content">
             <h2>Operator Dashboard</h2>
-            
-            <div class="dashboard-grid">
-                <div class="card">
-                    <h3 class="card-title">Alerts</h3>
-                    <c:if test="${not empty alerts}">
-                        <c:forEach var="alert" items="${alerts}">
-                            <div class="alert">
-                                <strong>${alert.type}:</strong> ${alert.message} (Vehicle: ${alert.vehicleId})
-                            </div>
-                        </c:forEach>
-                    </c:if>
-                    <c:if test="${empty alerts}">
-                        <p>No active alerts.</p>
-                    </c:if>
-                </div>
-                
+                          
                 <div class="card">
                     <h3 class="card-title">Vehicle Status</h3>
                     <table>
