@@ -1,7 +1,7 @@
 <%-- 
     Document   : edit.jsp
     Created on : Apr 2, 2025, 9:03:33 p.m.
-    Author     : MM
+    Author     : Songmei Jin
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

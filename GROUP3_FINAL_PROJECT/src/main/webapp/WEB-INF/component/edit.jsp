@@ -1,7 +1,7 @@
 <%-- 
     Document   : component-edit.jsp
     Created on : Apr 5, 2025
-    Author     : Claude AI Assistant
+    Author     : Songmei Jin
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

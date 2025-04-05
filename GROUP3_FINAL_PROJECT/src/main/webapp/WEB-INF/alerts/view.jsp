@@ -1,7 +1,7 @@
 <%-- 
     Document   : view.jsp
     Created on : Apr 3, 2025, 2:52:42 p.m.
-    Author     : MM
+    Author     : Songmei Jin
 --%>
 
 <!-- /WEB-INF/alerts/view.jsp -->

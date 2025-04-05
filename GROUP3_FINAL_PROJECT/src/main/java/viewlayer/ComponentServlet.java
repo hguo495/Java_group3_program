@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Servlet for handling component-related HTTP requests.
  * 
- * @author Claude AI Assistant
+ * @author Hongchen Guo
  */
 @WebServlet(name = "ComponentServlet", urlPatterns = {"/components"})
 public class ComponentServlet extends HttpServlet {

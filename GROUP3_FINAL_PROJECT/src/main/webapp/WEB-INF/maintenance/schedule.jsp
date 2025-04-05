@@ -1,8 +1,8 @@
 <%-- 
     Document   : schedule.jsp
     Created on : Apr 2, 2025, 10:07:02 a.m.
-    Author     : MM
-    Modified by: Claude AI Assistant
+    Author     : Songmei Jin
+   
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

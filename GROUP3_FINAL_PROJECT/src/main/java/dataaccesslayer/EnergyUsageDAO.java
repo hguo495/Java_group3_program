@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * DAO interface for energy usage operations.
- * @author Hongchen Guo
+ * @author Jinze Li
  */
 public interface EnergyUsageDAO {
     List<EnergyUsage> getAllEnergyUsage() throws SQLException;

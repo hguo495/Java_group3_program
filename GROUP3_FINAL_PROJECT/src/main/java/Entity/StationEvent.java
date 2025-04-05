@@ -2,7 +2,7 @@ package entity;
 
 /**
  * Entity class for recording vehicle arrivals and departures at stations.
- * @author [Your Name]
+ * @author Hongchen Guo
  */
 public class StationEvent {
     private int eventId;

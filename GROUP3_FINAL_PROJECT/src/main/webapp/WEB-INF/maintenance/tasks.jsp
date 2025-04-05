@@ -1,8 +1,8 @@
 <%-- 
     Document   : tasks.jsp
     Created on : April 02 2025
-    Author     : MM
-    Modified by: Claude AI Assistant
+    Author     : Songmei Jin
+    
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

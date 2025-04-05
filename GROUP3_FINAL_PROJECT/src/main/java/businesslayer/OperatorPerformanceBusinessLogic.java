@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * Business logic for processing and preparing operator performance metrics.
- * @author Claude AI
+ * @author Hongchen Guo
  */
 public class OperatorPerformanceBusinessLogic {
     private OperatorPerformanceDAO performanceDAO;

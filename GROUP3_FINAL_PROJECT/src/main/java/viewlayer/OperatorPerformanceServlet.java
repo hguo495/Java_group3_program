@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * Servlet for handling operator performance requests.
- * @author Claude AI
+ * @author Hongchen Guo
  */
 @WebServlet(name = "OperatorPerformanceServlet", urlPatterns = {"/operator-performance"})
 public class OperatorPerformanceServlet extends HttpServlet {

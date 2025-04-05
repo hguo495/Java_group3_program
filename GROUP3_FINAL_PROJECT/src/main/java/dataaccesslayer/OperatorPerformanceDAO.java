@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * DAO interface for retrieving operator performance metrics.
- * @author Claude AI
+ * @author Jinze Li
  */
 public interface OperatorPerformanceDAO {
     /**

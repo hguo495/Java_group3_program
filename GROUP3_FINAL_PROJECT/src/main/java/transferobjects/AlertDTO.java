@@ -2,7 +2,7 @@ package transferobjects;
 
 /**
  * DTO for transferring alert data between layers.
- * @author Hong Chen
+ * @author Hong Chen Guo
  * Modified by: Wenjuan Qi
  */
 public class AlertDTO {

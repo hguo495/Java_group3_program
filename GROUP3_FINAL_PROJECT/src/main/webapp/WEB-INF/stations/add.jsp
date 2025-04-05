@@ -2,7 +2,7 @@
     Document   : view.jsp
     Created on : Apr 3, 2025, 2:36:41 p.m.
     Author     : Hongchen guo
-    Modifiedby : Mei
+    Modifiedby : Songmei Jin
 --%>
 
 <!--updated on March 31-->

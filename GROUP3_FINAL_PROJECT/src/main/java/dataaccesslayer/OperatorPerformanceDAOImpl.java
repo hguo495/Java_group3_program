@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Implementation of OperatorPerformanceDAO for retrieving operator performance metrics.
- * @author Claude AI
+ * @author Jinze Li
  */
 public class OperatorPerformanceDAOImpl implements OperatorPerformanceDAO {
     private final Connection connection;

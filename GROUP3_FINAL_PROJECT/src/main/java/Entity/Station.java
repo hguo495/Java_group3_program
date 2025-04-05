@@ -2,7 +2,7 @@ package entity;
 
 /**
  * Entity class for the stations table.
- * @author [Your Name]
+ * @author Hongchen Guo
  */
 public class Station {
     private String stationId;

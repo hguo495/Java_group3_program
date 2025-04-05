@@ -14,7 +14,6 @@ import java.util.Date;
 /**
  * Business logic for alert operations using Observer pattern.
  * @author Hongchen Guo
- * Modified by Claude AI Assistant
  */
 public class AlertBusinessLogic {
     private AlertDAO alertDAO;

@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Honchen Guo
  * @modifiedBy Mei
- * @modifiedBy Claude AI Assistant
+
  */
 @WebServlet(name = "MaintenanceServlet", urlPatterns = {"/maintenance"})
 public class MaintenanceServlet extends HttpServlet {

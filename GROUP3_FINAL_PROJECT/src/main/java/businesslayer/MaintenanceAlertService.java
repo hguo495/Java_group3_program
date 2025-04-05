@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Business logic for maintenance alerts based on fuel levels and component age.
- * @author Modified Implementation
+ * @author Hongchen Guo
  */
 public class MaintenanceAlertService {
     

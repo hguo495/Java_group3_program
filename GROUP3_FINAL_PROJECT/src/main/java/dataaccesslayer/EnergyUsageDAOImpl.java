@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * DAO implementation for energy usage operations.
- * @author Hongchen Guo
+ * @author Jinze Li
  */
 public class EnergyUsageDAOImpl implements EnergyUsageDAO {
     private final Connection connection;
