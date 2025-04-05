@@ -14,6 +14,7 @@ import java.util.Date;
 /**
  * Business logic for alert operations using Observer pattern.
  * @author Hongchen Guo
+ * Modified by Claude AI Assistant
  */
 public class AlertBusinessLogic {
     private AlertDAO alertDAO;
@@ -59,6 +60,16 @@ public class AlertBusinessLogic {
     public Alert getAlertById(int alertId) throws SQLException {
         return alertDAO.getAlertById(alertId);
     }
+    
+    /**
+     * Updates an alert's information and notifies observers.
+     * @param alert the alert to update
+     * @throws SQLException if a database error occurs
+     */
+    public void updateAlert(Alert alert) throws SQLException {
+        alertDAO.updateAlert(alert);
+        notifyObservers();
+    }
 
     /**
      * Adds a new alert and notifies observers.
@@ -85,6 +96,7 @@ public class AlertBusinessLogic {
 
     /**
      * Resolves an alert by updating its status to "Resolved" and notifies observers.
+     * Modified to allow resolving from both Pending and Processing states.
      * @param alertId the ID of the alert to resolve
      * @throws SQLException if a database error occurs
      */
@@ -93,9 +105,12 @@ public class AlertBusinessLogic {
         if (alert == null) {
             throw new SQLException("Alert with ID " + alertId + " not found");
         }
-        if (!"Pending".equalsIgnoreCase(alert.getStatus())) {
+        
+        // Allow resolving from both Pending and Processing states
+        if (!"Pending".equalsIgnoreCase(alert.getStatus()) && !"Processing".equalsIgnoreCase(alert.getStatus())) {
             throw new SQLException("Alert with ID " + alertId + " cannot be resolved because its status is " + alert.getStatus());
         }
+        
         alert.setStatus("Resolved");
         alertDAO.updateAlert(alert);
         try {

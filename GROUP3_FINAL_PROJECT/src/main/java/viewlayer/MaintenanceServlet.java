@@ -1,9 +1,11 @@
 package viewlayer;
 
+import businesslayer.AlertBusinessLogic;
 import businesslayer.ComponentBusinessLogic;
 import businesslayer.VehicleBusinessLogic;
 import dataaccesslayer.MaintenanceTaskDAO;
 import dataaccesslayer.MaintenanceTaskDAOImpl;
+import entity.Alert;
 import entity.Component;
 import entity.MaintenanceTask;
 import entity.Vehicle;
@@ -24,6 +26,7 @@ import java.util.List;
  *
  * @author Honchen Guo
  * @modifiedBy Mei
+ * @modifiedBy Claude AI Assistant
  */
 @WebServlet(name = "MaintenanceServlet", urlPatterns = {"/maintenance"})
 public class MaintenanceServlet extends HttpServlet {
@@ -40,12 +43,12 @@ public class MaintenanceServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String action = request.getParameter("action");
-        if (action == null) {
-            action = "tasks"; // Default action
-        }
-
         try {
+            String action = request.getParameter("action");
+            if (action == null) {
+                action = "tasks"; // Default action
+            }
+
             // Setup database credentials
             CredentialsDTO creds = new CredentialsDTO();
             creds.setUsername("cst8288");
@@ -54,12 +57,61 @@ public class MaintenanceServlet extends HttpServlet {
             MaintenanceTaskDAO taskDAO = new MaintenanceTaskDAOImpl(creds);
             VehicleBusinessLogic vehicleLogic = new VehicleBusinessLogic(creds);
             ComponentBusinessLogic componentLogic = new ComponentBusinessLogic(creds);
+            AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
+
+            // Get pending alerts count for display in UI
+            List<Alert> pendingAlerts = alertLogic.getFilteredAlerts("Maintenance", "Pending", null);
+            request.setAttribute("pendingAlertsCount", pendingAlerts.size());
 
             switch (action) {
                 case "form":
                     // Show the form to schedule a new maintenance task
                     request.setAttribute("vehicles", vehicleLogic.getAllVehicles());
                     request.setAttribute("components", componentLogic.getAllComponents());
+                    
+                    // Check if this is coming from an alert
+                    String alertIdStr = request.getParameter("fromAlert");
+                    if (alertIdStr != null && !alertIdStr.isEmpty()) {
+                        try {
+                            int alertId = Integer.parseInt(alertIdStr);
+                            Alert alert = alertLogic.getAlertById(alertId);
+                            
+                            if (alert != null) {
+                                // Pre-fill form with alert data
+                                request.setAttribute("alertBasedMaintenance", true);
+                                request.setAttribute("alertId", alertId);
+                                request.setAttribute("alertMessage", alert.getMessage());
+                                request.setAttribute("selectedVehicleId", alert.getVehicleId());
+                                
+                                // Extract component ID from alert message if possible
+                                String message = alert.getMessage();
+                                if (message.contains("Component")) {
+                                    try {
+                                        int startIndex = message.indexOf("Component") + 10;
+                                        int endIndex = message.indexOf("of type");
+                                        if (startIndex > 10 && endIndex > startIndex) {
+                                            String componentIdStr = message.substring(startIndex, endIndex).trim();
+                                            request.setAttribute("selectedComponentId", Integer.parseInt(componentIdStr));
+                                        }
+                                    } catch (Exception e) {
+                                        // If parsing fails, don't pre-select component
+                                        System.err.println("Error parsing component ID: " + e.getMessage());
+                                    }
+                                }
+                                
+                                // Extract issue description from alert message
+                                request.setAttribute("issueDescription", "From alert: " + message);
+                                
+                                // Mark the alert as being processed
+                                alert.setStatus("Processing");
+                                alertLogic.updateAlert(alert);
+                            }
+                        } catch (NumberFormatException e) {
+                            // Invalid alert ID, ignore pre-fill
+                            System.err.println("Invalid alert ID: " + e.getMessage());
+                        }
+                    }
+                    
                     request.getRequestDispatcher("/WEB-INF/maintenance/schedule.jsp").forward(request, response);
                     break;
 
@@ -91,10 +143,8 @@ public class MaintenanceServlet extends HttpServlet {
                         int taskId = Integer.parseInt(taskIdToDelete);
                         taskDAO.deleteMaintenanceTask(taskId);
                     }
-                    // Refresh task list
-                    List<MaintenanceTask> tasksAfterDelete = taskDAO.getAllMaintenanceTasks();
-                    request.setAttribute("tasks", tasksAfterDelete);
-                    request.getRequestDispatcher("/WEB-INF/maintenance/tasks.jsp").forward(request, response);
+                    // Redirect to tasks page after deletion
+                    response.sendRedirect(request.getContextPath() + "/maintenance?action=tasks");
                     break;
 
                 default:
@@ -135,7 +185,15 @@ public class MaintenanceServlet extends HttpServlet {
 
         } catch (SQLException e) {
             // Handle SQL exceptions
+            System.err.println("Database error in MaintenanceServlet: " + e.getMessage());
+            e.printStackTrace();
             request.setAttribute("error", "Database error: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
+        } catch (Exception e) {
+            // Handle all other exceptions
+            System.err.println("Unexpected error in MaintenanceServlet: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "Unexpected error: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
         }
     }
@@ -152,15 +210,16 @@ public class MaintenanceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String action = request.getParameter("action");
-
         try {
+            String action = request.getParameter("action");
+
             // Setup credentials
             CredentialsDTO creds = new CredentialsDTO();
             creds.setUsername("cst8288");
             creds.setPassword("cst8288");
 
             MaintenanceTaskDAO taskDAO = new MaintenanceTaskDAOImpl(creds);
+            AlertBusinessLogic alertLogic = new AlertBusinessLogic(creds);
 
             if ("schedule".equals(action)) {
                 // Schedule a new maintenance task
@@ -168,6 +227,7 @@ public class MaintenanceServlet extends HttpServlet {
                 String componentIdStr = request.getParameter("componentId");
                 String description = request.getParameter("issue");
                 String scheduledDate = request.getParameter("scheduledDate");
+                String alertIdStr = request.getParameter("alertId");
 
                 // Validate form inputs
                 if (vehicleId == null || vehicleId.isEmpty()
@@ -190,10 +250,27 @@ public class MaintenanceServlet extends HttpServlet {
 
                 taskDAO.addMaintenanceTask(task);
 
-                // Refresh task list
-                List<MaintenanceTask> tasks = taskDAO.getAllMaintenanceTasks();
-                request.setAttribute("tasks", tasks);
-                request.getRequestDispatcher("/WEB-INF/maintenance/tasks.jsp").forward(request, response);
+                // If this task was created from an alert, resolve the alert
+                if (alertIdStr != null && !alertIdStr.isEmpty()) {
+                    try {
+                        int alertId = Integer.parseInt(alertIdStr);
+                        Alert alert = alertLogic.getAlertById(alertId);
+                        if (alert != null) {
+                            alert.setStatus("Resolved");
+                            alertLogic.updateAlert(alert);
+                        }
+                    } catch (Exception e) {
+                        // If alert resolution fails, continue anyway
+                        System.err.println("Error resolving alert: " + e.getMessage());
+                    }
+                }
+
+                // Add success message
+                HttpSession session = request.getSession();
+                session.setAttribute("successMessage", "Maintenance task scheduled successfully.");
+
+                // Redirect to tasks page after scheduling
+                response.sendRedirect(request.getContextPath() + "/maintenance?action=tasks");
 
             } else if ("update".equals(action)) {
                 // Update an existing task
@@ -226,15 +303,25 @@ public class MaintenanceServlet extends HttpServlet {
 
                 taskDAO.updateMaintenanceTask(task);
 
-                // Refresh task list
-                List<MaintenanceTask> tasks = taskDAO.getAllMaintenanceTasks();
-                request.setAttribute("tasks", tasks);
-                request.getRequestDispatcher("/WEB-INF/maintenance/tasks.jsp").forward(request, response);
+                // Add success message
+                HttpSession session = request.getSession();
+                session.setAttribute("successMessage", "Maintenance task updated successfully.");
+
+                // Redirect to tasks page
+                response.sendRedirect(request.getContextPath() + "/maintenance?action=tasks");
             }
 
         } catch (SQLException e) {
             // Handle SQL exceptions
+            System.err.println("Database error in MaintenanceServlet: " + e.getMessage());
+            e.printStackTrace();
             request.setAttribute("error", "Database error: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
+        } catch (Exception e) {
+            // Handle all other exceptions
+            System.err.println("Unexpected error in MaintenanceServlet: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "Unexpected error: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
         }
     }

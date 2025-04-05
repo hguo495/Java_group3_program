@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -200,6 +201,34 @@
                                 <td>${entry.key}</td>
                                 <td>${entry.value.size()}</td>
                                 <td><a href="tracking?action=stationReport&vehicleId=${entry.key}" class="btn">View</a></td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Operator Performance</h3>
+                    <table>
+                        <tr>
+                            <th>Operator ID</th>
+                            <th>Total Trips</th>
+                            <th>On-Time %</th>
+                            <th>Action</th>
+                        </tr>
+                        <c:forEach var="performance" items="${onTimeRates}" end="4">
+                            <tr>
+                                <td>${performance.operatorId}</td>
+                                <td>${performance.totalTrips}</td>
+                                <td>
+                                    <fmt:formatNumber value="${performance.onTimePercentage}" 
+                                                      type="number" 
+                                                      maxFractionDigits="2"/>%
+                                </td>
+                                <td>
+                                    <a href="operator-performance?operatorId=${performance.operatorId}" class="btn">
+                                        View
+                                    </a>
+                                </td>
                             </tr>
                         </c:forEach>
                     </table>

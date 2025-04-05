@@ -107,6 +107,9 @@
         .status-pending {
             background-color: #fef9e7;
         }
+        .status-processing {
+            background-color: #f9e79f;
+        }
         .status-resolved {
             background-color: #eafaf1;
         }
@@ -121,11 +124,101 @@
         .btn-resolve:hover {
             background-color: #27ae60;
         }
+        .btn-schedule {
+            background-color: #9b59b6;
+        }
+        .btn-schedule:hover {
+            background-color: #8e44ad;
+        }
         .btn-view {
             background-color: #3498db;
         }
         .btn-view:hover {
             background-color: #2980b9;
+        }
+        .btn-back {
+            background-color: #7f8c8d;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-back:hover {
+            background-color: #6c7a7a;
+        }
+        .btn-back svg {
+            margin-right: 5px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .breadcrumb li {
+            display: inline;
+        }
+        .breadcrumb li+li:before {
+            content: ">";
+            padding: 0 8px;
+            color: #777;
+        }
+        .breadcrumb a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .summary-cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .summary-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .summary-card-content h3 {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .summary-card-content p {
+            margin: 5px 0 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .pending-icon {
+            background-color: #e74c3c;
+        }
+        .processing-icon {
+            background-color: #f39c12;
+        }
+        .resolved-icon {
+            background-color: #2ecc71;
         }
         .pagination {
             display: flex;
@@ -148,11 +241,59 @@
         .pagination a:hover:not(.active) {
             background-color: #ddd;
         }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="navigation">
+            <ul class="breadcrumb">
+                <li><a href="${pageContext.request.contextPath}/maintenance">Maintenance</a></li>
+                <li>Alert Management</li>
+            </ul>
+            <a href="${pageContext.request.contextPath}/maintenance" class="btn btn-back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                Back to Maintenance
+            </a>
+        </div>
+        
         <h1>Alert Management</h1>
+        
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="summary-card-icon pending-icon">
+                    ${pendingCount}
+                </div>
+                <div class="summary-card-content">
+                    <h3>Pending Alerts</h3>
+                    <p>Need Attention</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-icon processing-icon">
+                    ${processingCount}
+                </div>
+                <div class="summary-card-content">
+                    <h3>Processing</h3>
+                    <p>In Progress</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-icon resolved-icon">
+                    ${resolvedCount}
+                </div>
+                <div class="summary-card-content">
+                    <h3>Resolved</h3>
+                    <p>Completed</p>
+                </div>
+            </div>
+        </div>
         
         <div class="filter-section">
             <form id="filterForm" action="${pageContext.request.contextPath}/alerts" method="get">
@@ -170,6 +311,7 @@
                         <select id="status" name="status">
                             <option value="">All Statuses</option>
                             <option value="Pending" ${param.status == 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Processing" ${param.status == 'Processing' ? 'selected' : ''}>Processing</option>
                             <option value="Resolved" ${param.status == 'Resolved' ? 'selected' : ''}>Resolved</option>
                         </select>
                     </div>
@@ -201,7 +343,7 @@
             </thead>
             <tbody>
                 <c:forEach items="${alerts}" var="alert">
-                    <tr class="status-${alert.status == 'Pending' ? 'pending' : 'resolved'}">
+                    <tr class="status-${alert.status == 'Pending' ? 'pending' : (alert.status == 'Processing' ? 'processing' : 'resolved')}">
                         <td>${alert.alertId}</td>
                         <td>
                             <span class="badge badge-${alert.type == 'Maintenance' ? 'maintenance' : alert.type == 'Fuel' ? 'fuel' : 'other'}">${alert.type}</span>
@@ -211,14 +353,23 @@
                         <td>${alert.timestamp}</td>
                         <td>${alert.status}</td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/alerts?action=view&id=${alert.alertId}" class="btn btn-view btn-action">View</a>
-                            <c:if test="${alert.status == 'Pending'}">
-                                <form action="${pageContext.request.contextPath}/alerts" method="post" style="display: inline;">
-                                    <input type="hidden" name="action" value="resolve">
-                                    <input type="hidden" name="id" value="${alert.alertId}">
-                                    <button type="submit" class="btn btn-resolve btn-action">Resolve</button>
-                                </form>
-                            </c:if>
+                            <div class="action-buttons">
+                                <a href="${pageContext.request.contextPath}/alerts?action=view&id=${alert.alertId}" class="btn btn-view btn-action">View</a>
+                                
+                                <c:if test="${alert.status == 'Pending' || alert.status == 'Processing'}">
+                                    <form action="${pageContext.request.contextPath}/alerts" method="post" style="display: inline;">
+                                        <input type="hidden" name="action" value="resolve">
+                                        <input type="hidden" name="id" value="${alert.alertId}">
+                                        <button type="submit" class="btn btn-resolve btn-action">Resolve</button>
+                                    </form>
+                                </c:if>
+                                
+                                <!-- Add the Schedule Maintenance button for maintenance alerts -->
+                                <c:if test="${alert.type == 'Maintenance' && (alert.status == 'Pending' || alert.status == 'Processing')}">
+                                    <a href="${pageContext.request.contextPath}/maintenance?action=form&fromAlert=${alert.alertId}" 
+                                       class="btn btn-schedule btn-action">Schedule</a>
+                                </c:if>
+                            </div>
                         </td>
                     </tr>
                 </c:forEach>

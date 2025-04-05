@@ -119,6 +119,27 @@ CREATE TABLE reports (
     timestamp DATETIME NOT NULL
 );
 
+-- Add new table for operator trips and performance tracking
+CREATE TABLE operator_trips (
+    trip_id INT PRIMARY KEY AUTO_INCREMENT,
+    operator_id INT NOT NULL,
+    vehicle_id VARCHAR(50) NOT NULL,
+    route VARCHAR(100) NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME,
+    scheduled_start_time DATETIME NOT NULL,
+    actual_start_time DATETIME NOT NULL,
+    is_on_time BOOLEAN DEFAULT FALSE,
+    distance_traveled DOUBLE NOT NULL,
+    trip_duration INT NOT NULL, -- in minutes
+    idle_time INT DEFAULT 0, -- in minutes
+    fuel_consumption DOUBLE,
+    passenger_count INT,
+    trip_date DATE NOT NULL,
+    FOREIGN KEY (operator_id) REFERENCES users(user_id),
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
+);
+
 -- Insert sample data for Users
 INSERT INTO users (name, email, password, type) VALUES
 ('John Doe', 'john.doe@transit.com', 'pass123', 'Manager'),
@@ -141,6 +162,24 @@ INSERT INTO gps_tracking (vehicle_id, latitude, longitude, timestamp, station_id
 INSERT INTO operator_logs (vehicle_id, start_time, end_time, event_type, operator_id) VALUES
 ('BUS001', '2025-03-27 12:00:00', '2025-03-27 12:30:00', 'Break', 2),
 ('RAIL001', '2025-03-27 13:00:00', NULL, 'Out-of-Service', 3);
+
+-- Insert some sample data for operator trips
+INSERT INTO operator_trips (
+    operator_id, vehicle_id, route, start_time, end_time, 
+    scheduled_start_time, actual_start_time, is_on_time, 
+    distance_traveled, trip_duration, idle_time, 
+    fuel_consumption, passenger_count, trip_date
+) VALUES 
+(2, 'BUS001', 'Route A', '2025-03-27 07:55:00', '2025-03-27 08:55:00', 
+ '2025-03-27 08:00:00', '2025-03-27 07:55:00', TRUE, 
+ 50.5, 60, 5, 12.5, 40, '2025-03-27'),
+(3, 'RAIL001', 'Route B', '2025-03-27 08:10:00', '2025-03-27 09:20:00', 
+ '2025-03-27 08:00:00', '2025-03-27 08:10:00', FALSE, 
+ 45.0, 70, 10, 55.0, 65, '2025-03-27'),
+(2, 'BUS001', 'Route A', '2025-03-28 07:50:00', '2025-03-28 08:50:00', 
+ '2025-03-28 08:00:00', '2025-03-28 07:50:00', TRUE, 
+ 52.0, 60, 3, 11.8, 45, '2025-03-28');
+
 
 -- Insert sample data for EnergyUsage
 INSERT INTO energy_usage (vehicle_id, fuel_energy_type, amount_used, distance_traveled, timestamp) VALUES

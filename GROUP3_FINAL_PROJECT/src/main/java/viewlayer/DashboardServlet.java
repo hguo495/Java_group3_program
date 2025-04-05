@@ -1,6 +1,7 @@
 package viewlayer;
 
 import businesslayer.AlertBusinessLogic;
+import businesslayer.OperatorPerformanceBusinessLogic;
 import businesslayer.ReportBusinessLogic;
 import businesslayer.TrackingBusinessLogic;
 import businesslayer.VehicleBusinessLogic;
@@ -75,6 +76,11 @@ public class DashboardServlet extends HttpServlet {
                 // Get reports
                 List<Report> reports = reportLogic.getAllReports();
                 request.setAttribute("reports", reports);
+
+                // Add operator performance metrics
+                OperatorPerformanceBusinessLogic performanceLogic = new OperatorPerformanceBusinessLogic(creds);
+                List<Map<String, Object>> onTimeRates = performanceLogic.getOperatorOnTimeRates(null, null);
+                request.setAttribute("onTimeRates", onTimeRates);
             }
             
             // Forward to the appropriate dashboard
